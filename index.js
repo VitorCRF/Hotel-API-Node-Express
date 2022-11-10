@@ -1,3 +1,7 @@
+//Alunos
+//Lucas Kusman Leal
+//Tiago Felipe Muller
+//Vitor Felix de Araujo
 const express = require('express');
 const mongoose = require('mongoose');
 
