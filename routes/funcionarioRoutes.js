@@ -57,8 +57,12 @@ router.patch('/:id', async (req, res) => {
     }
 
     try{
-        const funcionarios = await Funcionario.updateOne({_id: id}, funcionario)
-        res.status(200).json({message: 'Funcionario editado com sucesso!'}, funcionario)
+        const funcionarioAtualizado = await Funcionario.updateOne({_id: id}, funcionario)
+        if(funcionarioAtualizado.matchedCount === 0){
+            res.status(422).json({message: 'Funcionário não encontrado!'})
+            return;
+        }
+        res.status(200).json({message: 'Funcionario editado com sucesso!'})
     }catch(error){
         res.status(500).json({error: error.message})
     }

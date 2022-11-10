@@ -92,22 +92,35 @@ router.get('/FindByQuartoId/:id', async (req, res) => {
 router.patch('/:id', async (req, res) => {
     const id = req.params.id
 
-    const { quartoId, clienteId, funcionarioId, dataEntrada, dataSaida, cancelada, checkin, checkout } = req.body;
+    var { quarto_id, cliente_id, funcionario_id, data_entrada, data_saida, cancelada, checkin, checkout } = req.body;
+
+    var dia = data_entrada.split("/")[0];
+    var mes = data_entrada.split("/")[1];
+    var ano = data_entrada.split("/")[2];
+    data_entrada = new Date(mes + "/" + dia + "/" + ano);
+    dia = data_saida.split("/")[0];
+    mes = data_saida.split("/")[1];
+    ano = data_saida.split("/")[2];
+    data_saida = new Date(mes + "/" + dia + "/" + ano);
 
     const reserva = {
-        quartoId,
-        clienteId,
-        funcionarioId,
-        dataEntrada,
-        dataSaida,
+        quarto_id,
+        cliente_id,
+        funcionario_id,
+        data_entrada,
+        data_saida,
         cancelada,
         checkin,
         checkout
     }
 
     try {
-        const reservas = await Reserva.updateOne({ _id: id }, reserva)
-        res.status(200).json({ message: 'Reserva editado com sucesso!' }, reserva)
+        const reservaAtualizada = await Reserva.updateOne({ _id: id }, reserva)
+        if (reservaAtualizada.matchedCount === 0) {
+            res.status(422).json({ message: 'Reserva não encontrada!' })
+            return
+        }
+        res.status(200).json({ message: 'Reserva editada com sucesso!' })
     } catch (error) {
         res.status(500).json({ error: error.message })
     }

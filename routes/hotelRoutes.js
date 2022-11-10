@@ -60,8 +60,12 @@ router.patch('/:id', async (req, res) => {
     }
     
     try{
-        const hoteis = await Hotel.updateOne({_id: id}, hotel)
-        res.status(200).json({message: 'Hotel editado com sucesso!'}, hotel)
+        const hotelAtualizado = await Hotel.updateOne({_id: id}, hotel)
+        if(hotelAtualizado.matchedCount === 0){
+            res.status(422).json({message: 'Hotel não encontrado!'})
+            return;
+        }
+        res.status(200).json({message: 'Hotel editado com sucesso!'})
     }catch(error){
         res.status(500).json({error: error.message})
     }

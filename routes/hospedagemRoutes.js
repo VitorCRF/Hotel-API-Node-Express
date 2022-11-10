@@ -64,8 +64,12 @@ router.patch('/:id', async (req, res) => {
     }
 
     try{
-        const hospedagens = await Hospedagem.updateOne({_id: id}, hospedagem)
-        res.status(200).json({message: 'Hospedagem editada com sucesso!'}, hospedagem)
+        const hospedagemAtualizada = await Hospedagem.updateOne({_id: id}, hospedagem)
+        if(hospedagemAtualizada.matchedCount === 0){
+            res.status(422).json({message: 'Hospedagem não encontrada!'})
+            return;
+        }
+        res.status(200).json({message: 'Hospedagem editada com sucesso!'})
     }catch(error){
         res.status(500).json({error: error.message})
     }

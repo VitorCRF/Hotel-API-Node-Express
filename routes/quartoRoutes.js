@@ -110,8 +110,16 @@ router.post('/GetRoomsFreeByDate', async (req, res) => {
 router.patch('/:id', async (req, res) => {
     const id = req.params.id
 
-    const { hotel_id, numero, tipo, valor, adaptacao_especial, ocupado, dataOcupadoInicio, dataOcupadoFim } = req.body;
+    var { hotel_id, numero, tipo, valor, adaptacao_especial, ocupado, dataOcupadoInicio, dataOcupadoFim } = req.body;
 
+    var dia = dataOcupadoInicio.split("/")[0];
+        var mes = dataOcupadoInicio.split("/")[1];
+        var ano = dataOcupadoInicio.split("/")[2];
+        dataOcupadoInicio = new Date(mes + "/" + dia + "/" + ano);
+        dia = dataOcupadoFim.split("/")[0];
+        mes = dataOcupadoFim.split("/")[1];
+        ano = dataOcupadoFim.split("/")[2];
+        dataOcupadoFim = new Date(mes + "/" + dia + "/" + ano);
     const quarto = {
         hotel_id,
         numero,
@@ -124,10 +132,14 @@ router.patch('/:id', async (req, res) => {
     }
 
     try {
-        const quartos = await Quarto.updateOne({ _id: id }, quarto)
-        res.status(200).json({ message: 'Quarto editado com sucesso!' }, quarto)
+        const quartoAtualizado = await Quarto.updateOne({ _id: id }, quarto)
+        if(quartoAtualizado.matchedCount === 0){
+            res.status(422).json({message: 'Quarto não encontrado!'})
+            return;
+        }
+        res.status(200).json({ message: 'Quarto editado com sucesso!' })
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({ error: error })
     }
 })
 
