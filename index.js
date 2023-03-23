@@ -1,4 +1,3 @@
-//Alunos
 //Lucas Kusman Leal
 //Tiago Felipe Muller
 //Vitor Felix de Araujo
